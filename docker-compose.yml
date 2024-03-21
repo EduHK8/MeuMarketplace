@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: local-aws-services
+    ports:
+      - "4566-4583:4566-4583"
+    environment:
+      - SERVICES=s3,lambda,iam # Defina outros serviços necessários
+      - AWS_DEFAULT_REGION=us-east-1
+      - EDGE_PORT=4566
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock" # Adicione esta linha para montar o volume do Docker

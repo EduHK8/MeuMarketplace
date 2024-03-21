@@ -1,0 +1,81 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1D2F3B;
+    color: #ffffff;
+}
+
+.container {
+    width: 80%;
+    margin: 40px auto;
+    text-align: center;
+}
+
+#finalizar-compra {
+    background-color: #2980BA;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    font-size: 16px;
+    margin: 20px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#finalizar-compra:hover {
+    background-color: #216a94;
+}
+
+#carrinho-items {
+    margin: 20px 0;
+    border-top: 2px solid #2980BA;
+    padding-top: 20px;
+}
+
+h1 {
+    color: #2980BA;
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Estilo do Pop-up */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 5px;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

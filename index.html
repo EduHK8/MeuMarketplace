@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalização de Pedido</title>
+    <link rel="stylesheet" href="http://localhost:4566/onexlab-bucket-terraform/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Finalização de Pedido</h1>
+        <div id="carrinho-items">
+            <p class="item">Produto 1 - Quantidade: 1</p>
+            <p class="item">Produto 2 - Quantidade: 2</p>
+            <!-- Adicione itens do carrinho aqui -->
+        </div>
+        <button id="finalizar-compra">Finalizar Compra</button>
+    </div>
+
+    <!-- Pop-up de Confirmação -->
+    <div id="modal-confirmacao" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 style="color: black;">Aguardando Confirmação</h2>
+            <p style="color: black;">Sua compra está sendo processada. Aguarde a confirmação.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('finalizar-compra').addEventListener('click', function() {
+                var modal = document.getElementById("modal-confirmacao");
+                modal.style.display = "block";
+
+                // Simular a compra
+                fetch('http://localhost:4567/simulate_purchase', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Exibir resposta da simulação de compra
+                    // Aqui você pode adicionar lógica para lidar com a resposta da simulação
+                })
+                .catch(error => {
+                    console.error('Erro ao simular a compra:', error);
+                    // Aqui você pode adicionar lógica para lidar com erros
+                });
+            });
+
+            document.getElementsByClassName("close-button")[0].addEventListener('click', function() {
+                var modal = document.getElementById("modal-confirmacao");
+                modal.style.display = "none";
+            });
+
+            window.onclick = function(event) {
+                var modal = document.getElementById("modal-confirmacao");
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
