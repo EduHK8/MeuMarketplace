@@ -5,13 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalização de Pedido</title>
     <link rel="stylesheet" href="http://localhost:4566/onexlab-bucket-terraform/style.css">
+    <style>
+        #status-compra {
+            margin: 50px auto;
+            width: 50%;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Finalização de Pedido</h1>
         <div id="carrinho-items">
-            <p class="item">Produto 1 - Quantidade: 1</p>
-            <p class="item">Produto 2 - Quantidade: 2</p>
+            <div class="produto">
+                <p class="item">Produto 1 - Quantidade: 1</p>
+            </div>
             <!-- Adicione itens do carrinho aqui -->
         </div>
         <button id="finalizar-compra">Finalizar Compra</button>
@@ -26,20 +34,67 @@
         </div>
     </div>
 
+    <!-- Status da Compra -->
+    <div id="status-compra">
+        <h2>Status da Compra</h2>
+        <div id="status-text">Aguardando compra...</div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Função para verificar o status da compra
+            function checkStatus() {
+                fetch('http://localhost:4566/2015-03-31/functions/checkPurchaseStatus/invocations')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na solicitação: ' + response.status);
+                    }
+                    if (response.status === 204) {
+                        // Resposta sem conteúdo, não precisa fazer o parsing como JSON
+                        return null;
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data !== null) {
+                        // Atualizar o status da compra no frontend
+                        document.getElementById('status-text').innerText = data.purchase_status;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao verificar o status da compra:', error);
+                    // Lidar com erros
+                });
+            }
+
+            // Função para verificar o status da compra a cada 5 segundos (5000 milissegundos)
+            setInterval(checkStatus, 5000);
+
             document.getElementById('finalizar-compra').addEventListener('click', function() {
                 var modal = document.getElementById("modal-confirmacao");
                 modal.style.display = "block";
 
                 // Simular a compra
-                fetch('http://localhost:4567/simulate_purchase', {
+                fetch('http://localhost:4566/2015-03-31/functions/purchaseSimulation/invocations', {
                     method: 'POST'
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na solicitação: ' + response.status);
+                    }
+                    if (response.status === 204) {
+                        // Resposta sem conteúdo, não precisa fazer o parsing como JSON
+                        return null;
+                    } else {
+                        return response.json();
+                    }
+                })
                 .then(data => {
-                    console.log(data); // Exibir resposta da simulação de compra
-                    // Aqui você pode adicionar lógica para lidar com a resposta da simulação
+                    if (data !== null) {
+                        console.log(data); // Exibir resposta da simulação de compra
+                        // Aqui você pode adicionar lógica para lidar com a resposta da simulação
+                    }
                 })
                 .catch(error => {
                     console.error('Erro ao simular a compra:', error);

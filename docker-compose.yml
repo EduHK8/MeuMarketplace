@@ -7,7 +7,7 @@ services:
     ports:
       - "4566-4583:4566-4583"
     environment:
-      - SERVICES=s3,lambda,iam # Defina outros serviços necessários
+      - SERVICES=s3,lambda,iam, sqs # Defina outros serviços necessários
       - AWS_DEFAULT_REGION=us-east-1
       - EDGE_PORT=4566
     volumes:
