@@ -35,39 +35,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Função para verificar o status da compra
-            function checkStatus() {
-                fetch('http://localhost:4566/2015-03-31/functions/checkPurchaseStatus/invocations')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro na solicitação: ' + response.status);
-                    }
-                    if (response.status === 204) {
-                        // Resposta sem conteúdo, não precisa fazer o parsing como JSON
-                        return null;
-                    } else {
-                        return response.json();
-                    }
-                })
-                .then(data => {
-                    if (data !== null) {
-                        // Atualizar o status da compra no frontend
-                        document.getElementById('status-text').innerText = data.purchase_status;
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao verificar o status da compra:', error);
-                    // Lidar com erros
-                });
-            }
-    
-            // Função para verificar o status da compra a cada 5 segundos (5000 milissegundos)
-            setInterval(checkStatus, 5000);
-    
             document.getElementById('finalizar-compra').addEventListener('click', function() {
                 var modal = document.getElementById("modal-confirmacao");
                 modal.style.display = "block";
-    
+
                 // Simular a compra
                 fetch('http://localhost:4566/2015-03-31/functions/purchaseSimulation/invocations', {
                     method: 'POST'
@@ -87,6 +58,8 @@
                     if (data !== null) {
                         console.log(data); // Exibir resposta da simulação de compra
                         // Aqui você pode adicionar lógica para lidar com a resposta da simulação
+                        document.getElementById('status-compra').style.display = "block"; // Exibir o status da compra
+                        checkStatus(); // Chamar a função para verificar o status da compra
                     }
                 })
                 .catch(error => {
@@ -94,19 +67,56 @@
                     // Aqui você pode adicionar lógica para lidar com erros
                 });
             });
-    
+
+
             document.getElementsByClassName("close-button")[0].addEventListener('click', function() {
                 var modal = document.getElementById("modal-confirmacao");
                 modal.style.display = "none";
             });
-    
+
             window.onclick = function(event) {
                 var modal = document.getElementById("modal-confirmacao");
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
             }
+
+            // Função para verificar o status da compra
+            function checkStatus() {
+                fetch('http://localhost:4566/2015-03-31/functions/checkPurchaseStatus/invocations', {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na solicitação: ' + response.status);
+                    }
+                    if (response.status === 204) {
+                        // Resposta sem conteúdo, não precisa fazer o parsing como JSON
+                        return null;
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    console.log("Dados recebidos do backend:", data); // Adicionando log de depuração
+                    if (data !== null && typeof data !== 'undefined' && typeof data.body !== 'undefined') {
+                        const responseData = JSON.parse(data.body);
+                        if (responseData.purchase_status !== undefined) {
+                            // Atualizar o status da compra no frontend
+                            document.getElementById('status-text').innerText = responseData.purchase_status;
+                        } else {
+                            console.error("purchase_status não encontrado nos dados da resposta."); // Adicionando log de erro
+                        }
+                    }
+                })
+                    .catch(error => {
+                    console.error('Erro ao verificar o status da compra:', error);
+                    // Lidar com erros
+                });
+            }
+            setInterval(checkStatus, 5000);
         });
+
     </script>
 </body>
 </html>

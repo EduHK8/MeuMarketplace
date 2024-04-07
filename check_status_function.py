@@ -3,10 +3,10 @@ import os
 import boto3
 
 # Obtendo a URL da fila SQS da variável de ambiente
-queue_url = os.environ['SQS_QUEUE_URL']
+queue_url = os.getenv('SQS_QUEUE_URL')
 
 # Criando um cliente para o SQS
-sqs_client = boto3.client('sqs')
+sqs_client = boto3.client('sqs', endpoint_url=os.getenv('LOCALSTACK_SQS_URL'))
 
 def lambda_handler(event, context):
     try:
